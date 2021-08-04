@@ -10,7 +10,7 @@ const Numbers = (props) => {
             <div>
                 <h1>Numbers</h1>
                 {entries.map(entry =>
-                    <Num key={entry.name} id={entry.id} name={entry.name} number={entry.number} pers={entries} setPer={props.setPer} />
+                    <Num key={entry.id} id={entry.id} name={entry.name} number={entry.number} pers={entries} setPer={props.setPer} />
                 )}
             </div>
         )
@@ -137,10 +137,18 @@ const App = () => {
             }
             else {
                 if (window.confirm(newName + " already exists, do you want to replace it")) {
-                    setNoti(newName + ' was added to the phonebook');
+                    setNoti(newName + ' number was updated');
                     const tempID = persons.find(x => x.name === newName).id;
+                    const personObj = {
+                        id: tempID,
+                        name: newName,
+                        number: newNum
+                    }
                     dbService
-                        .updateperson(tempID, newNum, newName)
+                        .update(tempID, personObj)
+                        .then(updatedBook => {
+                            setPersons(updatedBook)
+                        })
                     setNewName('')
                     setNewNum('')
                     setTimeout(() => { setNoti(null) }, 5000)
